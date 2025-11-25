@@ -2,6 +2,15 @@
 
 This is the frontend for ZenCart-V2, a modern e-commerce web application built with React. It provides a user-friendly interface for browsing products, managing a shopping cart, and completing purchases.
 
+## Table of Contents
+
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Prerequisites](#prerequisites)
+- [Getting Started](#getting-started)
+- [Available Scripts](#available-scripts)
+- [State Management](#state-management)
+
 ## Technologies Used
 
 -   **React**: A JavaScript library for building user interfaces
@@ -13,6 +22,21 @@ This is the frontend for ZenCart-V2, a modern e-commerce web application built w
 -   **Tailwind CSS**: A utility-first CSS framework for rapid UI development
 -   **React Toastify**: For displaying notifications
 -   **React Icons**: For including popular icons
+
+## Project Structure
+
+```
+zencart-v2-frontend/
+├── src/
+│   ├── components/      # Reusable UI components (Navbar, ProductCard, etc.)
+│   ├── pages/           # Top-level page components (Home, Cart, Login, etc.)
+│   ├── redux/           # Redux store, slices (cart, user), and configuration
+│   ├── App.jsx          # Main application component with routing
+│   ├── main.jsx         # Entry point of the application
+│   └── requestMethods.js # Axios instances for API communication
+├── public/              # Static assets
+└── tailwind.config.js   # Tailwind CSS configuration
+```
 
 ## Prerequisites
 
@@ -59,3 +83,13 @@ The application will be available at `http://localhost:5173` (or the next availa
 -   **`npm run build`**: Bundles the application for production into the `dist` folder.
 -   **`npm run lint`**: Lints the codebase using ESLint.
 -   **`npm run preview`**: Serves the production build locally to preview it.
+
+## State Management
+
+This application uses **Redux Toolkit** for state management.
+
+-   **Slices**: The state is organized into "slices" located in `src/redux/`.
+    -   `cartRedux.js`: Manages the state of the shopping cart (products, quantity, total).
+    -   `userRedux.js`: Manages the user's authentication state (current user, tokens).
+-   **Persistence**: **Redux Persist** is used to save the entire store to the browser's `localStorage`. This ensures that the user's cart and login session are preserved across browser sessions.
+-   **Store**: The Redux store is configured in `src/redux/store.js`.
