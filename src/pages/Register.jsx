@@ -7,22 +7,29 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(false);
+    setErrorMessage("");
+    
     try {
       await publicRequest.post("/auth/register", {
         name,
         email,
         password,
       });
-      navigate("/login"); // Redirect to login after success
+      // Redirect to login with a success indicator? Or just login page.
+      alert("Account created! Please log in.");
+      navigate("/login"); 
     } catch (err) {
-      setError(true);
-      console.error(err);
+      if (err.response && err.response.data) {
+        // Backend sends "User already exists"
+        setErrorMessage(typeof err.response.data === 'string' ? err.response.data : "Registration failed.");
+      } else {
+        setErrorMessage("Network error. Please try again.");
+      }
     }
   };
 
@@ -58,7 +65,13 @@ const Register = () => {
           >
             CREATE
           </button>
-          {error && <span className="text-red-500 text-sm">Something went wrong!</span>}
+          
+          {/* DISPLAY SPECIFIC ERROR */}
+          {errorMessage && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded border border-red-200 text-center">
+              {errorMessage}
+            </div>
+          )}
           
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">

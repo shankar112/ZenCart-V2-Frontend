@@ -2,26 +2,36 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux';
-import { publicRequest } from '../requestMethods';
-import { useNavigate, Link } from 'react-router-dom'; // Import Link
+import { publicRequest } from '../requestMethods'; // Use centralized request
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // Local state for specific error text
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isFetching, error } = useSelector((state) => state.user);
+  const { isFetching } = useSelector((state) => state.user);
 
   const handleClick = async (e) => {
     e.preventDefault();
+    setErrorMessage(""); // Clear previous errors
     dispatch(loginStart());
+    
     try {
       const res = await publicRequest.post("/auth/login", { email, password });
       dispatch(loginSuccess(res.data));
       navigate("/");
     } catch (err) {
       dispatch(loginFailure());
-      console.error(err);
+      
+      // EXTRACT THE REAL ERROR MESSAGE
+      if (err.response && err.response.data) {
+        // Backend sends simple strings like "Wrong credentials!"
+        setErrorMessage(typeof err.response.data === 'string' ? err.response.data : "Login failed.");
+      } else {
+        setErrorMessage("Network error. Please try again.");
+      }
     }
   };
 
@@ -48,9 +58,14 @@ const Login = () => {
           >
             LOGIN
           </button>
-          {error && <span className="text-red-500 text-sm">Something went wrong...</span>}
           
-          {/* NEW: Link to Register */}
+          {/* DISPLAY SPECIFIC ERROR */}
+          {errorMessage && (
+            <div className="p-3 text-sm text-red-600 bg-red-50 rounded border border-red-200 text-center">
+              {errorMessage}
+            </div>
+          )}
+          
           <div className="text-center mt-4">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
