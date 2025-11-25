@@ -2,19 +2,20 @@
 import { useEffect, useState } from 'react';
 import { publicRequest } from '../requestMethods';
 import ProductCard from '../components/ProductCard';
+import Loader from '../components/Loader'; // <-- Import Loader
 
 const Home = () => {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]); // To store search results
+  const [filteredProducts, setFilteredProducts] = useState([]); 
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState(""); // Search Query
+  const [search, setSearch] = useState(""); 
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await publicRequest.get('/products');
         setProducts(res.data);
-        setFilteredProducts(res.data); // Initially, display all
+        setFilteredProducts(res.data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching products:", err);
@@ -24,7 +25,6 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  // Filter Logic
   useEffect(() => {
     setFilteredProducts(
       products.filter((item) =>
@@ -64,8 +64,9 @@ const Home = () => {
         </div>
       </div>
 
+      {/* LOADING STATE */}
       {loading ? (
-        <p className="text-center text-xl">Loading products...</p>
+        <Loader /> // <-- New Loader Component
       ) : (
         <section className="w-fit mx-auto grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 justify-items-center justify-center gap-y-20 gap-x-14 mt-10 mb-5">
           {filteredProducts.length > 0 ? (
@@ -73,7 +74,7 @@ const Home = () => {
               <ProductCard key={item._id} product={item} />
             ))
           ) : (
-            <p className="text-center col-span-full text-gray-500">No products found.</p>
+            <p className="text-center col-span-full text-gray-500 text-lg">No products found matching your search.</p>
           )}
         </section>
       )}

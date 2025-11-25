@@ -3,28 +3,31 @@ import { useState } from 'react';
 import { publicRequest } from '../requestMethods';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Loader from '../components/Loader'; // <-- Import Loader
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  
-  // Two separate states for toggling visibility
-  const [showPassword, setShowPassword] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
+  // Local loading state
+  const [isFetching, setIsFetching] = useState(false); 
   
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 1. Validation: Check if passwords match
     if (password !== confirmPassword) {
       toast.error("Passwords do not match!");
       return; 
     }
+
+    setIsFetching(true); // Start Loading
 
     try {
       await publicRequest.post("/auth/register", {
@@ -41,8 +44,15 @@ const Register = () => {
       } else {
         toast.error("Network error. Please try again.");
       }
+    } finally {
+      setIsFetching(false); // Stop Loading
     }
   };
+
+  // SHOW LOADER
+  if (isFetching) {
+    return <Loader />;
+  }
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -50,7 +60,6 @@ const Register = () => {
         <h2 className="text-3xl font-bold text-center text-gray-800">Create Account</h2>
         <form className="space-y-5" onSubmit={handleSubmit}>
           
-          {/* Full Name */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-600">Full Name</label>
             <input
@@ -61,7 +70,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Email */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-600">Email</label>
             <input
@@ -73,7 +81,6 @@ const Register = () => {
             />
           </div>
 
-          {/* Password */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-600">Password</label>
             <div className="relative">
@@ -95,7 +102,6 @@ const Register = () => {
             </div>
           </div>
 
-          {/* Confirm Password - NOW WITH EYE ICON */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-600">Confirm Password</label>
             <div className="relative">
