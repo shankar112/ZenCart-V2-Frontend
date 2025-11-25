@@ -1,11 +1,41 @@
 // src/components/Navbar.jsx
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../redux/userRedux';
+import { resetCart } from '../redux/cartRedux';
+import { userRequest } from '../requestMethods';
 
 const Navbar = () => {
   const quantity = useSelector(state => state.cart.quantity);
-  const user = useSelector(state => state.user.currentUser); // Get User
+  const user = useSelector(state => state.user.currentUser);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [showMenu, setShowMenu] = useState(false);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(resetCart());
+    navigate('/login');
+  };
+
+  const handleDeleteAccount = async () => {
+    if (window.confirm("Are you sure? This action cannot be undone.")) {
+      try {
+        // Ensure we use the correct ID field from the user object
+        // MongoDB usually uses '_id', but sometimes we might map it to 'id'
+        const userId = user._id || user.id; 
+        
+        await userRequest.delete(`/users/${userId}`);
+        
+        alert("Account deleted successfully.");
+        handleLogout();
+      } catch (err) {
+        console.error("Delete Error:", err.response ? err.response.data : err);
+        alert("Failed to delete account.");
+      }
+    }
+  };
 
   return (
     <nav className="bg-white shadow-md py-4 px-8 flex justify-between items-center sticky top-0 z-50">
@@ -13,7 +43,7 @@ const Navbar = () => {
         ZenCart<span className="text-gray-800">V2</span>
       </Link>
 
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-6 relative">
         <Link to="/" className="text-gray-600 hover:text-blue-600 font-medium">Shop</Link>
         
         <Link to="/cart" className="relative text-gray-600 hover:text-blue-600">
@@ -26,7 +56,45 @@ const Navbar = () => {
         </Link>
 
         {user ? (
-          <span className="font-bold text-gray-700">Hi, {user.name.split(' ')[0]}</span>
+          <div className="relative">
+            {/* Profile Icon Trigger */}
+            <button 
+              onClick={() => setShowMenu(!showMenu)}
+              className="flex items-center gap-2 focus:outline-none"
+            >
+              <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white font-bold">
+                {user.name.charAt(0).toUpperCase()}
+              </div>
+              <span className="font-medium text-gray-700">{user.name.split(' ')[0]}</span>
+              <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+
+            {/* Dropdown Menu */}
+            {showMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
+                <button 
+                  onClick={handleLogout}
+                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                >
+                  Logout
+                </button>
+                <button 
+                  onClick={handleDeleteAccount}
+                  className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                >
+                  Delete Account
+                </button>
+              </div>
+            )}
+            
+            {/* Click outside overlay to close menu */}
+            {showMenu && (
+              <div 
+                className="fixed inset-0 z-40 bg-transparent cursor-default"
+                onClick={() => setShowMenu(false)}
+              ></div>
+            )}
+          </div>
         ) : (
           <Link to="/login" className="bg-blue-600 text-white px-5 py-2 rounded-full font-medium hover:bg-blue-700 transition">
             Login
