@@ -3,7 +3,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { increaseQuantity, decreaseQuantity, removeProduct } from '../redux/cartRedux';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { userRequest } from '../requestMethods';
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
@@ -18,7 +18,7 @@ const Cart = () => {
       return;
     }
     try {
-      const res = await axios.post('http://localhost:5000/api/checkout/payment', {
+      const res = await userRequest.post('/checkout/payment', {
         items: cart.products,
       });
       if (res.data.url) window.location.href = res.data.url;

@@ -1,6 +1,6 @@
 // src/pages/Home.jsx
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { publicRequest } from '../requestMethods';
 import ProductCard from '../components/ProductCard';
 
 const Home = () => {
@@ -12,7 +12,7 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get('http://localhost:5000/api/products');
+        const res = await publicRequest.get('/products');
         setProducts(res.data);
         setFilteredProducts(res.data); // Initially, display all
         setLoading(false);

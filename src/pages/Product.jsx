@@ -1,7 +1,7 @@
 // src/pages/Product.jsx
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import { publicRequest } from '../requestMethods';
 import { useDispatch } from "react-redux";
 import { addProduct } from "../redux/cartRedux";
 
@@ -15,7 +15,7 @@ const Product = () => {
   useEffect(() => {
     const getProduct = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products/" + id);
+        const res = await publicRequest.get("/products/" + id);
         setProduct(res.data);
       } catch (err) {
         console.error(err);
