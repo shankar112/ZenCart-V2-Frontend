@@ -7,8 +7,8 @@ import Success from './pages/Success';
 import Product from './pages/Product';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AdminProduct from './pages/AdminProduct'; // <-- Import Admin Page
 
-// --- TOAST SETUP ---
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,7 +16,6 @@ function App() {
   return (
     <Router>
       <Navbar />
-      {/* This container renders the popups */}
       <ToastContainer 
         position="top-center"
         autoClose={2000}
@@ -36,6 +35,7 @@ function App() {
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/admin/add" element={<AdminProduct />} /> {/* <-- New Route */}
       </Routes>
     </Router>
   );
