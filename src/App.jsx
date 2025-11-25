@@ -6,19 +6,34 @@ import Cart from './pages/Cart';
 import Success from './pages/Success';
 import Product from './pages/Product';
 import Login from './pages/Login';
-import Register from './pages/Register'; // Import Register
+import Register from './pages/Register';
+
+// --- TOAST NOTIFICATIONS SETUP ---
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
     <Router>
       <Navbar />
+      <ToastContainer 
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={true}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/product/:id" element={<Product />} />
         <Route path="/success" element={<Success />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} /> {/* Add Route */}
+        <Route path="/register" element={<Register />} />
       </Routes>
     </Router>
   );
