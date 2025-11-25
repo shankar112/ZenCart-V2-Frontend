@@ -5,12 +5,13 @@ import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux';
 import { publicRequest } from '../requestMethods';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import Loader from '../components/Loader'; // <-- Import Loader
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // Toggle State
+  const [showPassword, setShowPassword] = useState(false);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,13 +37,16 @@ const Login = () => {
     }
   };
 
+  // SHOW LOADER IF FETCHING
+  if (isFetching) {
+    return <Loader />;
+  }
+
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
         <h2 className="text-3xl font-bold text-center text-gray-800">Sign In</h2>
         <form className="space-y-5">
-          
-          {/* Email Input */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-600">Email</label>
             <input
@@ -52,7 +56,6 @@ const Login = () => {
             />
           </div>
 
-          {/* Password Input with Eye Icon */}
           <div className="flex flex-col gap-1">
             <label className="text-sm font-semibold text-gray-600">Password</label>
             <div className="relative">
@@ -74,10 +77,9 @@ const Login = () => {
 
           <button
             onClick={handleClick}
-            disabled={isFetching}
-            className="w-full p-3 text-white bg-blue-600 rounded-lg font-bold hover:bg-blue-700 disabled:bg-blue-300 transition duration-300"
+            className="w-full p-3 text-white bg-blue-600 rounded-lg font-bold hover:bg-blue-700 transition duration-300"
           >
-            {isFetching ? "LOGGING IN..." : "LOGIN"}
+            LOGIN
           </button>
           
           <div className="text-center mt-4">
