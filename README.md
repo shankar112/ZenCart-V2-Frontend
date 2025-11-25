@@ -1,17 +1,61 @@
-# React + Vite
+# ZenCart-V2 Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for ZenCart-V2, a modern e-commerce web application built with React. It provides a user-friendly interface for browsing products, managing a shopping cart, and completing purchases.
 
-Currently, two official plugins are available:
+## Technologies Used
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **React**: A JavaScript library for building user interfaces
+-   **Vite**: A fast build tool and development server for modern web projects
+-   **React Router**: For client-side routing and navigation
+-   **Redux Toolkit**: For efficient and predictable state management
+-   **Redux Persist**: To save the Redux store in local storage
+-   **Axios**: For making HTTP requests to the backend API
+-   **Tailwind CSS**: A utility-first CSS framework for rapid UI development
+-   **React Toastify**: For displaying notifications
+-   **React Icons**: For including popular icons
 
-## React Compiler
+## Prerequisites
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   [Node.js](https://nodejs.org/) (v14 or newer)
+-   The [ZenCart-V2 Backend API](<path-to-backend-readme.md>) must be running.
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# ZenCart-V2-Frontend
+### 1. Clone the Repository
+
+```bash
+git clone <repository-url>
+cd zencart-v2-frontend
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Configure the Backend API URL
+
+The application is configured to connect to the backend API at `http://localhost:5000/api/`.
+
+If your backend is running on a different address, you must update the `BASE_URL` constant in the `src/requestMethods.js` file:
+
+```javascript
+// src/requestMethods.js
+const BASE_URL = "http://your-backend-api-url/api/";
+```
+
+### 4. Run the Development Server
+
+```bash
+npm run dev
+```
+
+The application will be available at `http://localhost:5173` (or the next available port).
+
+## Available Scripts
+
+-   **`npm run dev`**: Starts the Vite development server with Hot Module Replacement (HMR).
+-   **`npm run build`**: Bundles the application for production into the `dist` folder.
+-   **`npm run lint`**: Lints the codebase using ESLint.
+-   **`npm run preview`**: Serves the production build locally to preview it.
