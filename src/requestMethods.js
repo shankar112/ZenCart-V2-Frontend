@@ -1,16 +1,13 @@
 // src/requestMethods.js
 import axios from "axios";
 
-// BASE URL: Change this one line to point to your live server later!
-// For now, keep it localhost.
-const BASE_URL = "http://localhost:5000/api/";
+// 🚀 LIVE BACKEND URL (From your Render Dashboard)
+const BASE_URL = "https://zencart-v2-backend.onrender.com/api/";
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
 });
 
-// For requests that need the Token (Cart, Orders, etc.)
-// We will set the token dynamically in the components or use an interceptor
 export const userRequest = axios.create({
   baseURL: BASE_URL,
 });
