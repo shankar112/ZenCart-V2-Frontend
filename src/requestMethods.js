@@ -1,7 +1,5 @@
-// src/requestMethods.js
 import axios from "axios";
 
-// THE FINAL FIX: Point to the LIVE Render Backend
 const BASE_URL = "https://zencart-v2-backend.onrender.com/api/";
 
 export const publicRequest = axios.create({
