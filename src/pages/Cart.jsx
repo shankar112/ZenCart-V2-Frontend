@@ -28,6 +28,8 @@ const Cart = () => {
     try {
       const res = await userRequest.post('checkout/payment', {
         items: cart.products,
+        successUrl: `${window.location.origin}/success`,
+        cancelUrl: `${window.location.origin}/cart`,
       });
       if (res.data.url) window.location.href = res.data.url;
     } catch (err) {
