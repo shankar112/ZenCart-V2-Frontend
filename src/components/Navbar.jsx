@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../redux/userRedux';
 import { resetCart } from '../redux/cartRedux';
 import { userRequest } from '../requestMethods';
+import { toast } from 'react-toastify'; // Import Toast
 
 const Navbar = () => {
   const quantity = useSelector(state => state.cart.quantity);
@@ -17,22 +18,23 @@ const Navbar = () => {
     dispatch(logout());
     dispatch(resetCart());
     navigate('/login');
+    toast.info("Logged out successfully.");
   };
 
   const handleDeleteAccount = async () => {
+    // We still use window.confirm because it pauses execution, which is good for safety.
     if (window.confirm("Are you sure? This action cannot be undone.")) {
       try {
-        // Ensure we use the correct ID field from the user object
-        // MongoDB usually uses '_id', but sometimes we might map it to 'id'
-        const userId = user._id || user.id; 
-        
+        const userId = user._id || user.id;
         await userRequest.delete(`/users/${userId}`);
         
-        alert("Account deleted successfully.");
-        handleLogout();
+        toast.success("Account deleted successfully."); // Toast instead of alert
+        dispatch(logout());
+        dispatch(resetCart());
+        navigate('/');
       } catch (err) {
         console.error("Delete Error:", err.response ? err.response.data : err);
-        alert("Failed to delete account.");
+        toast.error("Failed to delete account."); // Toast instead of alert
       }
     }
   };
@@ -57,11 +59,7 @@ const Navbar = () => {
 
         {user ? (
           <div className="relative">
-            {/* Profile Icon Trigger */}
-            <button 
-              onClick={() => setShowMenu(!showMenu)}
-              className="flex items-center gap-2 focus:outline-none"
-            >
+            <button onClick={() => setShowMenu(!showMenu)} className="flex items-center gap-2 focus:outline-none">
               <div className="w-8 h-8 bg-gray-800 rounded-full flex items-center justify-center text-white font-bold">
                 {user.name.charAt(0).toUpperCase()}
               </div>
@@ -69,36 +67,17 @@ const Navbar = () => {
               <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
             </button>
 
-            {/* Dropdown Menu */}
             {showMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-100">
-                <button 
-                  onClick={handleLogout}
-                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                >
-                  Logout
-                </button>
-                <button 
-                  onClick={handleDeleteAccount}
-                  className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                >
-                  Delete Account
-                </button>
+                <button onClick={handleLogout} className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">Logout</button>
+                <button onClick={handleDeleteAccount} className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left">Delete Account</button>
               </div>
             )}
             
-            {/* Click outside overlay to close menu */}
-            {showMenu && (
-              <div 
-                className="fixed inset-0 z-40 bg-transparent cursor-default"
-                onClick={() => setShowMenu(false)}
-              ></div>
-            )}
+            {showMenu && <div className="fixed inset-0 z-40 bg-transparent cursor-default" onClick={() => setShowMenu(false)}></div>}
           </div>
         ) : (
-          <Link to="/login" className="bg-blue-600 text-white px-5 py-2 rounded-full font-medium hover:bg-blue-700 transition">
-            Login
-          </Link>
+          <Link to="/login" className="bg-blue-600 text-white px-5 py-2 rounded-full font-medium hover:bg-blue-700 transition">Login</Link>
         )}
       </div>
     </nav>

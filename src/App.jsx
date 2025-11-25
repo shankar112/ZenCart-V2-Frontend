@@ -8,7 +8,7 @@ import Product from './pages/Product';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
-// --- TOAST NOTIFICATIONS SETUP ---
+// --- TOAST SETUP ---
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -16,8 +16,9 @@ function App() {
   return (
     <Router>
       <Navbar />
+      {/* This container renders the popups */}
       <ToastContainer 
-        position="top-right"
+        position="top-center"
         autoClose={2000}
         hideProgressBar={false}
         newestOnTop={true}
@@ -26,6 +27,7 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        theme="light"
       />
       <Routes>
         <Route path="/" element={<Home />} />
