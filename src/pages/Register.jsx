@@ -2,29 +2,40 @@
 import { useState } from 'react';
 import { publicRequest } from '../requestMethods';
 import { useNavigate, Link } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Import Toast
+import { toast } from 'react-toastify';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  
+  // Two separate states for toggling visibility
+  const [showPassword, setShowPassword] = useState(false); 
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
+    // 1. Validation: Check if passwords match
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!");
+      return; 
+    }
+
     try {
       await publicRequest.post("/auth/register", {
         name,
         email,
         password,
       });
-      // Redirect to login with a success indicator? Or just login page.
       toast.success("Account created! Please log in.");
       navigate("/login"); 
     } catch (err) {
       if (err.response && err.response.data) {
-        // Backend sends "User already exists"
         const msg = typeof err.response.data === 'string' ? err.response.data : "Registration failed.";
         toast.error(msg);
       } else {
@@ -35,35 +46,81 @@ const Register = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center">Create an Account</h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <input
-            className="w-full p-3 border rounded"
-            placeholder="Full Name"
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <input
-            className="w-full p-3 border rounded"
-            type="email"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            className="w-full p-3 border rounded"
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            minLength="6"
-          />
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
+        <h2 className="text-3xl font-bold text-center text-gray-800">Create Account</h2>
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          
+          {/* Full Name */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">Full Name</label>
+            <input
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="John Doe"
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Email */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">Email</label>
+            <input
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              type="email"
+              placeholder="john@example.com"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">Password</label>
+            <div className="relative">
+              <input
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition pr-10"
+                type={showPassword ? "text" : "password"}
+                placeholder="At least 6 characters"
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength="6"
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password - NOW WITH EYE ICON */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">Confirm Password</label>
+            <div className="relative">
+              <input
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition pr-10"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Re-enter your password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700 cursor-pointer"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </button>
+            </div>
+          </div>
+
           <button
             type="submit"
-            className="w-full p-3 text-white bg-blue-600 rounded hover:bg-blue-700 transition"
+            className="w-full p-3 text-white bg-blue-600 rounded-lg font-bold hover:bg-blue-700 transition duration-300"
           >
-            CREATE
+            CREATE ACCOUNT
           </button>
           
           <div className="text-center mt-4">

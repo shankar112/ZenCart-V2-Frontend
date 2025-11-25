@@ -4,11 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../redux/userRedux';
 import { publicRequest } from '../requestMethods';
 import { useNavigate, Link } from 'react-router-dom';
-import { toast } from 'react-toastify'; // Import Toast
+import { toast } from 'react-toastify';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Icons
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Toggle State
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isFetching } = useSelector((state) => state.user);
@@ -20,12 +23,10 @@ const Login = () => {
     try {
       const res = await publicRequest.post("/auth/login", { email, password });
       dispatch(loginSuccess(res.data));
-      toast.success("Welcome back!"); // Success Toast
+      toast.success("Welcome back!");
       navigate("/");
     } catch (err) {
       dispatch(loginFailure());
-      
-      // TOAST ERROR instead of inline div
       if (err.response && err.response.data) {
         const msg = typeof err.response.data === 'string' ? err.response.data : "Login failed.";
         toast.error(msg);
@@ -37,26 +38,46 @@ const Login = () => {
 
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-        <h2 className="text-2xl font-bold text-center">Sign In</h2>
-        <form className="space-y-4">
-          <input
-            className="w-full p-3 border rounded"
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            className="w-full p-3 border rounded"
-            type="password"
-            placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
+      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
+        <h2 className="text-3xl font-bold text-center text-gray-800">Sign In</h2>
+        <form className="space-y-5">
+          
+          {/* Email Input */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">Email</label>
+            <input
+              className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
+          {/* Password Input with Eye Icon */}
+          <div className="flex flex-col gap-1">
+            <label className="text-sm font-semibold text-gray-600">Password</label>
+            <div className="relative">
+              <input
+                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition pr-10"
+                type={showPassword ? "text" : "password"}
+                placeholder="Enter your password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button
+                type="button"
+                className="absolute right-3 top-3.5 text-gray-500 hover:text-gray-700 cursor-pointer"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+              </button>
+            </div>
+          </div>
+
           <button
             onClick={handleClick}
             disabled={isFetching}
-            className="w-full p-3 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-blue-300"
+            className="w-full p-3 text-white bg-blue-600 rounded-lg font-bold hover:bg-blue-700 disabled:bg-blue-300 transition duration-300"
           >
-            LOGIN
+            {isFetching ? "LOGGING IN..." : "LOGIN"}
           </button>
           
           <div className="text-center mt-4">
